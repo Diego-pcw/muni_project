@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdateComunicadoRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true; // middleware admin protege
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'titulo'            => ['sometimes','string','max:255'],
+            'imagen'            => ['sometimes','image','mimes:jpg,jpeg,png','max:2048'], // ✅
+            'descripcion'       => ['sometimes','string'],
+            'fecha_publicacion' => ['sometimes','date'],
+            'hora_publicacion'  => ['sometimes','date_format:H:i'],
+            'publicador'        => ['sometimes','string','max:255'],
+            'entidad'           => ['sometimes','string','max:255'],
+            'estado'            => ['sometimes','in:activo,inactivo'],
+        ];
+    }
+}
