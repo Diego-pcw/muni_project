@@ -24,15 +24,16 @@ class StoreFormularioRequest extends FormRequest
     {
         return [
             'nombres_apellidos' => ['required','string','max:255'],
-            'dni'              => ['required','digits:8'],
-            'ruc'              => ['nullable','digits:11'],
-            'celular'          => ['required','digits_between:6,15'],
+            'dni'               => ['required','digits:8','unique:formularios,dni'],
+            'ruc'               => ['nullable','digits:11','unique:formularios,ruc'],
+            'celular'           => ['required','digits_between:6,15','unique:formularios,celular'],
             'direccion'        => ['required','string','max:255'],
             'asociacion'       => ['nullable','string','max:255'],
             'propiedad'        => ['required','boolean'],
             'titulo'           => ['required','boolean'],
             'reg_publico'      => ['required','boolean'],
             'charlas'          => ['required','in:virtual,presencial,ninguno'],
+            'adicional'         => ['nullable','string'], // <-- nuevo
         ];
     }
 }

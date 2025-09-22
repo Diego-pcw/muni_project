@@ -22,10 +22,10 @@ Route::middleware('api')->group(function () {
     Route::get('/formularios/{formulario}', [FormularioController::class, 'show']);
     Route::post('/formularios', [FormularioController::class, 'store']);
 
-    // Admin (requiere token + rol admin)
+    // Admin (requiere token + rol admin) => solo admin puede editar/borrar
     Route::middleware(['auth:sanctum','admin'])->group(function () {
-        Route::put('/formularios/{formulario}', [FormularioController::class, 'update']);
-        Route::delete('/formularios/{formulario}', [FormularioController::class, 'destroy']);
+    Route::put('/formularios/{formulario}', [FormularioController::class, 'update']);
+    Route::delete('/formularios/{formulario}', [FormularioController::class, 'destroy']);
     });
 
     // Comunicados

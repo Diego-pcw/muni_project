@@ -22,6 +22,9 @@ class Formulario extends Model
         'titulo',
         'reg_publico',
         'charlas',
+        'adicional',   // <-- nuevo
+        'user_id',     // <-- nuevo
+        'session_id',
     ];
 
     protected $casts = [
@@ -29,4 +32,9 @@ class Formulario extends Model
         'titulo'      => 'boolean',
         'reg_publico' => 'boolean',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
