@@ -1,0 +1,359 @@
+/* src/styles/formularios.shared.css
+   Unificado para Create / Edit / Detail / List
+   Basado en tus colores y tamaños (mantiene el tamaño compacto del Create)
+*/
+
+:root {
+  --primary-blue: #0ea5e9;
+  --secondary-blue: #0284c7;
+  --light-blue: #e0f2fe;
+  --accent-yellow: #f59e0b;
+  --pure-white: #ffffff;
+  --soft-white: #f8fafc;
+  --off-white: #f1f5f9;
+
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+
+  --border-light: #e2e8f0;
+  --border-medium: #cbd5e1;
+  --shadow-soft: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-medium: 0 6px 18px rgba(2,6,23,0.06);
+
+  --radius: 8px;
+  --radius-large: 12px;
+}
+
+/* Wrapper: centro y respiración */
+.form-page {
+  padding: 18px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: transparent;
+}
+
+/* Card principal - mantiene el tamaño compacto del Create */
+.form-card {
+  width: 100%;
+  max-width: 720px;      /* <-- tamaño compacto (igual que Create) */
+  background: var(--pure-white);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-medium);
+  border: 1px solid var(--border-light);
+  overflow: hidden;
+}
+
+/* Header */
+.form-card-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(90deg, rgba(14,165,233,0.04), rgba(245,158,11,0.02));
+  display:flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-title {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-dark);
+  font-weight: 800;
+}
+.form-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Body & grid */
+.form-body {
+  padding: 16px 18px 20px 18px;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 14px;
+}
+
+/* Fields */
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.form-field-full {
+  grid-column: 1 / -1;
+}
+.form-label {
+  font-size: 13px;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+.form-input,
+.form-textarea,
+.form-select {
+  height: 42px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-medium);
+  background: var(--soft-white);
+  font-size: 14px;
+  color: var(--text-dark);
+  outline: none;
+  transition: box-shadow .12s, border-color .12s;
+  box-sizing: border-box;
+}
+.form-textarea { min-height: 86px; padding-top: 10px; padding-bottom: 10px; resize: vertical; height: auto; }
+
+/* focus */
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: var(--primary-blue);
+  box-shadow: 0 0 0 4px rgba(14,165,233,0.06);
+}
+
+/* error */
+.form-error {
+  color: #ef4444;
+  font-size: 12px;
+}
+
+/* checkboxes inline */
+.checkbox-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.checkbox-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-dark);
+}
+
+/* actions */
+.form-actions {
+  margin-top: 14px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* button variants */
+.btn {
+  appearance: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid var(--border-light);
+  background: var(--pure-white);
+  color: var(--text-dark);
+}
+.btn:focus { outline: 2px solid rgba(14,165,233,0.18); outline-offset: 2px; }
+
+.btn-primary {
+  background: var(--primary-blue);
+  color: white;
+  border-color: var(--primary-blue);
+}
+.btn-secondary {
+  background: transparent;
+  color: var(--text-dark);
+  border-color: var(--border-light);
+}
+
+/* small screens: responsive rules (match Create sizing) */
+@media (max-width: 900px) {
+  .form-card { max-width: 640px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-actions { justify-content: center; flex-direction: column; gap: 12px; }
+  .btn { width: 100%; }
+}
+
+/* tablets / small laptops centering and breathing room */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .form-page { padding-left: 24px; padding-right: 24px; }
+  .form-card { max-width: 680px; }
+  .form-grid { gap: 12px; }
+  .form-card-header { padding-left: 18px; padding-right: 18px; }
+  .form-body { padding-left: 18px; padding-right: 18px; }
+}
+
+/* extra small mobile */
+@media (max-width: 480px) {
+  .form-card { border-radius: 10px; width: 100%; max-width: 360px; }
+  .form-card-header { padding: 12px; }
+  .form-body { padding: 12px; }
+  .form-title { font-size: 18px; }
+  .form-subtitle { font-size: 12px; }
+  .form-input { height: 40px; font-size: 14px; }
+  .form-textarea { min-height: 74px; }
+  .form-actions { gap: 10px; }
+}
+
+/* util */
+.form-compact { max-width: 720px; margin-left: auto; margin-right: auto; }
+.center-actions { display:flex; justify-content:center; gap:8px; }
+
+/* ---------- Lista: tabla compacta y horizontal para Formularios ----------
+   Ajustes mejorados para mayor anchura horizontal y filas más delgadas.
+   Clases nuevas/uso:
+     - wrapper: .form-page.list-page (ya lo usas)
+     - tabla: .form-list-table (aplicar sobre <table>), .table-wide opcional
+----------------------------------------------------------------------- */
+
+/* Forzar que la tabla pueda usar todo el ancho disponible y distribuir columnas */
+.form-page.list-page .form-card {
+  max-width: 1100px; /* más ancho para tablas horizontales en laptops/tablets */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Make the table use available horizontal space; allow column sizing */
+.form-page.list-page .form-card .form-list-table,
+.form-page.list-page .form-card .form-list-table.table-wide {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--text-dark);
+  table-layout: auto; /* permite que columnas se expandan según contenido */
+}
+
+/* Header: compact and clear */
+.form-page.list-page .form-card .form-list-table thead th {
+  padding: 8px 10px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-light);
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Make key columns wider by default (so table looks horizontal) */
+.form-page.list-page .form-card .form-list-table thead th:nth-child(1) { min-width: 200px; } /* Nombres */
+.form-page.list-page .form-card .form-list-table thead th:nth-child(5) { min-width: 200px; } /* Dirección */
+.form-page.list-page .form-card .form-list-table thead th:nth-child(12) { min-width: 140px; } /* Acciones */
+
+/* Rows: reduced height and subtle hover */
+.form-page.list-page .form-card .form-list-table tbody tr {
+  border-bottom: 1px solid var(--border-light);
+  transition: background .12s ease;
+  background: transparent;
+}
+.form-page.list-page .form-card .form-list-table tbody tr:hover {
+  background: rgba(14,165,233,0.03);
+}
+
+/* Cells: less padding, ellipsis when needed */
+.form-page.list-page .form-card .form-list-table td {
+  padding: 8px 10px;           /* filas más delgadas */
+  vertical-align: middle;
+  white-space: nowrap;         /* intenta mantener en 1 línea en desktop/laptop */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Acciones: botones más compactos */
+.form-page.list-page .form-card .form-list-table .btn {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* Optional dense table (apply class .table-dense on <table>) */
+.form-page.list-page .form-card .form-list-table.table-dense td {
+  padding: 6px 8px;
+  font-size: 13px;
+}
+
+/* Wrap long text gracefully for some columns if you prefer (optional helper)
+   apply class .allow-wrap-col-X where X is the column index (1-based). */
+.form-page.list-page .form-card .form-list-table td.allow-wrap {
+  white-space: normal;
+  max-width: 320px; /* limit width if wrapping */
+}
+
+/* Table wrapper scrollbar spacing */
+.form-page.list-page .form-card > .form-body > .table-wrapper,
+.form-page.list-page .form-card > .form-body > div[style*="overflow-x: auto"] {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 6px 0 0 0;
+  padding-bottom: 6px;
+}
+
+/* Pagination row: compact and centered */
+.form-page.list-page .form-card .pagination-row {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* ================= RESPONSIVE TUNING ================= */
+
+/* Tablets / small laptops: keep compact but centered */
+@media (max-width: 1100px) {
+  .form-page.list-page .form-card { max-width: calc(100% - 32px); }
+  .form-page.list-page .form-card .form-list-table thead th { font-size: 12px; padding: 8px 8px; }
+  .form-page.list-page .form-card .form-list-table td { padding: 7px 8px; font-size: 13px; white-space: nowrap; }
+}
+
+/* Narrow laptops / large tablets: allow some wrapping to avoid overflow */
+@media (max-width: 920px) {
+  .form-page.list-page .form-card .form-list-table td {
+    font-size: 13px;
+    padding: 7px 8px;
+  }
+
+  /* Si deseas que ciertos campos envuelvan antes de cortar, añade la clase "allow-wrap" en <td> */
+  .form-page.list-page .form-card .form-list-table td.allow-wrap {
+    white-space: normal;
+  }
+}
+
+/* Mobile: convertir cada fila a "card" vertical (legibilidad) */
+@media (max-width: 720px) {
+  .form-page.list-page .form-card { max-width: 100%; padding-left: 12px; padding-right: 12px; }
+  .form-page.list-page .form-card .form-list-table thead { display: none; }
+  .form-page.list-page .form-card .form-list-table tbody tr {
+    display: block;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .form-page.list-page .form-card .form-list-table tbody td {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+    white-space: normal;
+    padding: 6px 0;
+    border: none;
+  }
+  .form-page.list-page .form-card .form-list-table tbody td::before {
+    /* opcional: si usas data-label JS puedes mostrar etiqueta aquí */
+    content: '';
+    width: 10px;
+    display: inline-block;
+  }
+  .form-page.list-page .form-card .form-list-table .btn {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}
+
+/* ================= SUGERENCIAS DE USO (no son CSS) =================
+ - En tu JSX utiliza <table className="form-list-table"> (o añade .table-dense / .table-wide).
+ - Si necesitas que la "Dirección" o "Nombres" envuelvan en pantallas intermedias,
+   añade className="allow-wrap" al <td> correspondiente.
+ - Si quieres aún más anchura fija para desktop, sube max-width en .form-page.list-page .form-card (ej. 1200px).
+ - Si prefieres que la tabla fuerce columnas iguales, cambia table-layout: fixed; en .form-list-table
+   y ajusta th { width: 15% } etc. (pero con `fixed` se pierde flexibilidad de contenido).
+================================================================== */

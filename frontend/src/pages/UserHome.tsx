@@ -95,6 +95,7 @@ export default function UserHome(): JSX.Element {
           </div>
 
           {/* Estadísticas Rápidas */}
+          {/*
           <div className="quick-stats">
             <h3 className="stats-title">📈 Impacto del Proyecto Avícola</h3>
             <div className="stats-grid">
@@ -115,7 +116,7 @@ export default function UserHome(): JSX.Element {
                 <span className="stat-label">Capacitaciones Realizadas</span>
               </div>
             </div>
-          </div>
+          </div>*/}
 
           {/* Información del Proyecto */}
           <div className="welcome-section" style={{ marginTop: '32px' }}>

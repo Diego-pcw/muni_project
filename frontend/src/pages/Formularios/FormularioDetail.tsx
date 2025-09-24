@@ -1,9 +1,9 @@
-// src/pages/Formularios/FormularioDetail.tsx
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { formularioService } from '../../services/formulario.service';
 import { useAuth } from '../../context/AuthContext';
 import type { Formulario } from '../../types';
+import '../../styles/formularios.shared.css';
 
 export default function FormularioDetail(): JSX.Element {
   const { id } = useParams<{ id: string }>();
@@ -53,45 +53,109 @@ export default function FormularioDetail(): JSX.Element {
     }
   };
 
-  if (loading) return <div style={{ padding: 20 }}>Cargando...</div>;
+  if (loading) return (
+    <div className="form-page">
+      <div className="form-card" style={{ textAlign: 'center', padding: 28 }}>
+        <div className="form-card-header">
+          <h2 className="form-title">Detalle del Formulario</h2>
+          <p className="form-subtitle">Cargando...</p>
+        </div>
+        <div className="form-body">Cargando...</div>
+      </div>
+    </div>
+  );
+
   if (error) return <div style={{ padding: 20, color: 'red' }}>{error}</div>;
   if (!item) return <div style={{ padding: 20 }}>No encontrado.</div>;
 
-  // SOLO admin verá Edit y Delete (clientes NO verán Edit)
-  const canEdit = Boolean(isAdmin);
-  const canDelete = Boolean(isAdmin);
-
   return (
-    <div style={{ padding: 20, maxWidth: 900, margin: '0 auto' }}>
-      <h2>Detalle del Formulario</h2>
+    <div className="form-page">
+      <div className="form-card">
+        <div className="form-card-header">
+          <h2 className="form-title">Detalle del Formulario</h2>
+          <p className="form-subtitle">Información detallada de la solicitud</p>
+        </div>
 
-      <div className="card" style={{ padding: 12 }}>
-        <p><strong>ID:</strong> {item.id}</p>
-        <p><strong>Nombres y apellidos:</strong> {item.nombres_apellidos}</p>
-        <p><strong>DNI:</strong> {item.dni}</p>
-        <p><strong>RUC:</strong> {item.ruc ?? '-'}</p>
-        <p><strong>Celular:</strong> {item.celular}</p>
-        <p><strong>Dirección:</strong> {item.direccion}</p>
-        <p><strong>Asociación:</strong> {item.asociacion ?? '-'}</p>
-        <p><strong>Propiedad:</strong> {item.propiedad ? 'Sí' : 'No'}</p>
-        <p><strong>Título:</strong> {item.titulo ? 'Sí' : 'No'}</p>
-        <p><strong>Registro público:</strong> {item.reg_publico ? 'Sí' : 'No'}</p>
-        <p><strong>Charlas:</strong> {item.charlas}</p>
-        <p><strong>Adicional:</strong> {item.adicional ?? '-'}</p>
-        <p><strong>Creado:</strong> {new Date(item.created_at).toLocaleString()}</p>
-      </div>
+        <div className="form-body">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div style={{ background: 'var(--soft-white)', padding: 12, borderRadius: 8 }}>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>ID</p>
+              <p style={{ margin: '6px 0 0', fontWeight: 700 }}>{item.id}</p>
+            </div>
 
-      <div style={{ marginTop: 12, display: 'flex', gap: 8 }}>
-        <button className="btn" onClick={() => navigate('/formularios')}>Volver a la lista</button>
+            <div style={{ background: 'var(--soft-white)', padding: 12, borderRadius: 8 }}>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Creado</p>
+              <p style={{ margin: '6px 0 0' }}>{new Date(item.created_at).toLocaleString()}</p>
+            </div>
 
-        {canEdit && (
-          <Link to={`/formularios/${item.id}/edit`} className="btn btn-primary">Editar</Link>
-        )}
+            <div style={{ gridColumn: '1 / -1', background: 'var(--pure-white)' }}>
+              <div style={{ padding: 12 }}>
+                <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Nombres y apellidos</p>
+                <p style={{ margin: '6px 0 0', fontWeight: 700 }}>{item.nombres_apellidos}</p>
 
-        {canDelete && (
-          <button className="btn btn-danger" onClick={handleDelete}>Eliminar</button>
-        )}
+                <p style={{ margin: '12px 0 0', color: 'var(--text-muted)', fontSize: 13 }}>Dirección</p>
+                <p style={{ margin: '6px 0 0' }}>{item.direccion}</p>
+
+                <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>DNI</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.dni}</p>
+                  </div>
+
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>RUC</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.ruc ?? '-'}</p>
+                  </div>
+
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Celular</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.celular}</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Propiedad</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.propiedad ? 'Sí' : 'No'}</p>
+                  </div>
+
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Título</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.titulo ? 'Sí' : 'No'}</p>
+                  </div>
+
+                  <div style={{ minWidth: 160 }}>
+                    <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Registro público</p>
+                    <p style={{ margin: '6px 0 0' }}>{item.reg_publico ? 'Sí' : 'No'}</p>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: 12 }}>
+                  <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Charlas</p>
+                  <p style={{ margin: '6px 0 0' }}>{item.charlas}</p>
+                </div>
+
+                <div style={{ marginTop: 12 }}>
+                  <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: 13 }}>Adicional</p>
+                  <p style={{ margin: '6px 0 0' }}>{item.adicional ?? '-'}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 16, display: 'flex', gap: 8, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <button className="btn" onClick={() => navigate('/formularios')}>Volver a la lista</button>
+
+            {isAdmin && (
+              <>
+                <Link to={`/formularios/${item.id}/edit`} className="btn btn-primary">Editar</Link>
+                <button className="btn btn-danger" onClick={handleDelete}>Eliminar</button>
+              </>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+

@@ -1,0 +1,36 @@
+/* Dashboard helpers (agregar a formularios.shared.css) */
+
+.quick-stats {
+  background: var(--pure-white);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+}
+
+.service-card {
+  background: var(--pure-white);
+  border-radius: var(--radius);
+  padding: 14px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-soft);
+}
+
+/* ensure buttons in dashboard fit small areas */
+.form-card .btn {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+/* responsive: collapse 2-column main area into single on small screens */
+@media (max-width: 880px) {
+  .form-body > .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* small tweak for csv export button spacing */
+.form-card .btn + .btn {
+  margin-left: 8px;
+}

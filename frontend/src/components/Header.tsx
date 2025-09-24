@@ -52,16 +52,6 @@ export default function Header(): JSX.Element {
             <span className="nav-text">Nuevo Registro</span>
           </Link>
 
-          <div className="nav-item" style={{ cursor: 'default', opacity: 0.6 }}>
-            <span className="nav-icon">🤝</span>
-            <span className="nav-text">Asistencia Técnica</span>
-          </div>
-
-          <div className="nav-item" style={{ cursor: 'default', opacity: 0.6 }}>
-            <span className="nav-icon">🏪</span>
-            <span className="nav-text">FERITAC</span>
-          </div>
-
           {user?.rol === 'admin' && (
             <>
               <div style={{ 
