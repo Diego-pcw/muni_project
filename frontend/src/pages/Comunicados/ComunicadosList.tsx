@@ -3,8 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { comunicadoService } from '../../services/comunicado.service';
 import type { Comunicado, Paginated } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ComunicadosList(): JSX.Element {
+  const { user } = useAuth();
+  const isAdmin = user?.rol === 'admin';
+
   const [items, setItems] = useState<Comunicado[]>([]);
   const [page, setPage] = useState<number>(1);
   const [perPage] = useState<number>(10);
@@ -41,7 +45,6 @@ export default function ComunicadosList(): JSX.Element {
     if (!confirm('¿Eliminar este comunicado?')) return;
     try {
       await comunicadoService.destroy(id);
-      // optimista: quitar de la lista
       setItems((s) => s.filter((c) => c.id !== id));
       setTotal((t) => Math.max(0, t - 1));
       alert('Comunicado eliminado (soft)');
@@ -55,7 +58,12 @@ export default function ComunicadosList(): JSX.Element {
     <div style={{ padding: 20 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h2>Comunicados</h2>
-        <Link to="/comunicados/create" className="btn btn-primary">Nuevo comunicado</Link>
+        {/* Mostrar botón crear sólo a admin */}
+        {isAdmin ? (
+          <Link to="/comunicados/create" className="btn btn-primary">Nuevo comunicado</Link>
+        ) : (
+          <div /> /* placeholder para alinear */
+        )}
       </div>
 
       {loading ? (
@@ -92,13 +100,25 @@ export default function ComunicadosList(): JSX.Element {
                       <td>{c.estado}</td>
                       <td>
                         {c.imagen ? (
-                          <img src={`${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '')}/storage/${c.imagen}`} alt="mini" style={{ maxWidth: 80, maxHeight: 60, objectFit: 'cover' }} />
+                          <img
+                            src={`${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '')}/storage/${c.imagen}`}
+                            alt="mini"
+                            style={{ maxWidth: 80, maxHeight: 60, objectFit: 'cover' }}
+                          />
                         ) : '-'}
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          <Link to={`/comunicados/${c.id}`} className="btn">Ver / Edit</Link>
-                          <button className="btn btn-danger" onClick={() => handleDelete(c.id)}>Eliminar</button>
+                          {/* "Ver" disponible para todos (lleva al detalle público) */}
+                          <Link to={`/comunicados/${c.id}`} className="btn">Ver</Link>
+
+                          {/* Edit / Delete sólo para admin */}
+                          {isAdmin && (
+                            <>
+                              <Link to={`/comunicados/${c.id}/edit`} className="btn">Editar</Link>
+                              <button className="btn btn-danger" onClick={() => handleDelete(c.id)}>Eliminar</button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>

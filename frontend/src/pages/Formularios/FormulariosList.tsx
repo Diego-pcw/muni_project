@@ -1,10 +1,14 @@
 // src/pages/Formularios/FormulariosList.tsx
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { formularioService } from '../../services/formulario.service';
 import type { Formulario, Paginated } from '../../types';
+import { useAuth } from '../../context/AuthContext';
 
 export default function FormulariosList(): JSX.Element {
+  const { user } = useAuth();
+  const isAdmin = useMemo(() => user?.rol === 'admin', [user]);
+
   const [items, setItems] = useState<Formulario[]>([]);
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
@@ -25,7 +29,9 @@ export default function FormulariosList(): JSX.Element {
     setLoading(true);
     setError(null);
     try {
-      const res = await formularioService.list(p, query, perPage);
+      // cuando no es admin, pedimos solo "mine" (backend devolverá vacíos para invitados)
+      const mine = Boolean(user && !isAdmin);
+      const res = await formularioService.list(p, query, perPage, mine);
       const data = res.data as Paginated<Formulario>;
       setItems(data.data ?? []);
       setPage(data.current_page ?? p);
@@ -39,10 +45,12 @@ export default function FormulariosList(): JSX.Element {
     }
   };
 
+  // when q or perPage or user changes, reload page 1
   useEffect(() => {
-    load(1, q); // reset to first page on new query
+    setPage(1);
+    load(1, q);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [q, perPage]);
+  }, [q, perPage, user]);
 
   useEffect(() => {
     load(page, q);
@@ -54,19 +62,13 @@ export default function FormulariosList(): JSX.Element {
     if (!confirm('¿Eliminar este formulario? Esta acción es irreversible.')) return;
     try {
       await formularioService.destroy(id);
-      // remove locally (without re-request)
       setItems((s) => s.filter((x) => x.id !== id));
       alert('Formulario eliminado');
-      // adjust total if present
       setTotal(t => Math.max(0, t - 1));
     } catch (err: any) {
       console.error(err);
       alert(err?.response?.data?.message || 'Error al eliminar');
     }
-  };
-
-  const startCreate = () => {
-    // go to create page
   };
 
   return (
@@ -111,18 +113,19 @@ export default function FormulariosList(): JSX.Element {
                   <th>Título</th>
                   <th>Registro público</th>
                   <th>Charlas</th>
+                  <th>Adicional</th>
                   <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {items.length === 0 ? (
-                  <tr><td colSpan={10} style={{ padding: 12 }}>No hay formularios</td></tr>
+                  <tr><td colSpan={12} style={{ padding: 12 }}>No hay formularios</td></tr>
                 ) : (
                   items.map((f) => (
                     <tr key={f.id}>
                       <td>{f.nombres_apellidos}</td>
                       <td>{f.dni}</td>
-                      <td>{f.ruc}</td>
+                      <td>{f.ruc ?? '-'}</td>
                       <td>{f.celular}</td>
                       <td>{f.direccion}</td>
                       <td>{f.asociacion ?? '-'}</td>
@@ -130,10 +133,21 @@ export default function FormulariosList(): JSX.Element {
                       <td>{f.titulo ? 'Sí' : 'No'}</td>
                       <td>{f.reg_publico ? 'Sí' : 'No'}</td>
                       <td>{f.charlas}</td>
+                      <td>{f.adicional}</td>
                       <td>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          <Link to={`/formularios/${f.id}`} className="btn">Ver / Edit</Link>
-                          <button className="btn btn-danger" onClick={() => handleDelete(f.id)}>Eliminar</button>
+                          {/* Ver siempre disponible (backend aplica autorización) */}
+                          <Link to={`/formularios/${f.id}`} className="btn">Ver</Link>
+
+                          {/* Edit: SOLO admin (clientes NO verán el botón) */}
+                          {isAdmin && (
+                            <Link to={`/formularios/${f.id}/edit`} className="btn">Editar</Link>
+                          )}
+
+                          {/* Delete: SOLO admin */}
+                          {isAdmin && (
+                            <button className="btn btn-danger" onClick={() => handleDelete(f.id)}>Eliminar</button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -143,7 +157,6 @@ export default function FormulariosList(): JSX.Element {
             </table>
           </div>
 
-          {/* pagination */}
           <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
             <button className="btn" onClick={() => setPage((s) => Math.max(1, s - 1))} disabled={page <= 1}>Anterior</button>
             <span>Página {page} de {totalPages} — total: {total}</span>

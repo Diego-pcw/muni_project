@@ -11,16 +11,19 @@ export type User = {
 
 export type Formulario = {
   id?: number;
-  nombres_apellidos?: string;
-  dni?: string;
+  user_id?: number | null;
+  session_id?: string | null;
+  nombres_apellidos: string;
+  dni: string;
   ruc?: string | null;
-  celular?: string;
-  direccion?: string;
+  celular: string;
+  direccion: string;
   asociacion?: string | null;
-  propiedad?: boolean | number;
-  titulo?: boolean | number;
-  reg_publico?: boolean | number;
-  charlas?: 'virtual' | 'presencial' | 'ninguno' | string;
+  propiedad?: boolean;
+  titulo?: boolean;
+  reg_publico?: boolean;
+  charlas?: 'virtual' | 'presencial' | 'ninguno';
+  adicional?: string | null;
   created_at?: string;
   updated_at?: string;
 };
@@ -40,10 +43,21 @@ export type Comunicado = {
   deleted_at?: string | null;
 };
 
+/**
+ * Generic paginated response from Laravel's paginate()
+ */
 export type Paginated<T> = {
+  current_page: number;
   data: T[];
-  current_page?: number;
-  last_page?: number;
-  per_page?: number;
-  total?: number;
+  first_page_url: string | null;
+  from: number | null;
+  last_page: number;
+  last_page_url: string | null;
+  links: Array<{ url: string | null; label: string; active: boolean; page?: number | null }>;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number | null;
+  total: number;
 };

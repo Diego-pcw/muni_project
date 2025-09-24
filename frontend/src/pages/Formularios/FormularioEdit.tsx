@@ -22,6 +22,7 @@ export default function FormularioEdit(): JSX.Element {
           propiedad: Boolean((d as any).propiedad),
           titulo: Boolean((d as any).titulo),
           reg_publico: Boolean((d as any).reg_publico),
+          adicional: (d as any).adicional ?? '',
         };
         reset(normalized);
       })
@@ -36,7 +37,13 @@ export default function FormularioEdit(): JSX.Element {
   const onSubmit = async (data: Partial<Formulario>) => {
     if (!id) return;
     try {
-      await formularioService.update(Number(id), data);
+      const payload = {
+        ...data,
+        propiedad: Boolean(data.propiedad),
+        titulo: Boolean(data.titulo),
+        reg_publico: Boolean(data.reg_publico),
+      };
+      await formularioService.update(Number(id), payload);
       alert('Formulario actualizado');
       navigate('/formularios');
     } catch (err: any) {
@@ -48,7 +55,7 @@ export default function FormularioEdit(): JSX.Element {
   if (loading) return <div style={{ padding: 20 }}>Cargando...</div>;
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, maxWidth: 720, margin: '0 auto' }}>
       <h2>Editar Formulario</h2>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-field">
@@ -97,6 +104,11 @@ export default function FormularioEdit(): JSX.Element {
           </select>
         </div>
 
+        <div className="form-field" style={{ marginTop: 12 }}>
+          <label>Adicional</label>
+          <textarea {...register('adicional' as any)} rows={3} />
+        </div>
+
         <div style={{ marginTop: 12 }}>
           <button className="btn btn-primary" type="submit" disabled={isSubmitting}>Actualizar</button>
           <button type="button" className="btn" onClick={() => navigate('/formularios')} style={{ marginLeft: 8 }}>Cancelar</button>
@@ -105,3 +117,4 @@ export default function FormularioEdit(): JSX.Element {
     </div>
   );
 }
+

@@ -1,5 +1,5 @@
 // src/context/AuthContext.tsx
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { authService } from '../services/auth.service';
 import type { User } from '../types';
 
@@ -17,14 +17,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const refreshProfile = async () => {
+  // Refresh profile: normaliza distintas formas de respuesta del backend
+  const refreshProfile = useCallback(async (): Promise<void> => {
     setLoading(true);
     try {
       const res = await authService.profile();
-      // Normaliza las distintas formas en que el backend puede devolver el user
-      //  - { id:..., name:... }                 => res.data
-      //  - { user: { ... } }                     => res.data.user
-      //  - { data: { ... } }                     => res.data.data
       const payload = res?.data ?? null;
       let u: any = null;
 
@@ -40,36 +37,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(u as User);
     } catch (err) {
-      // Si falla, limpiamos token y ponemos user a null
-      setUser(null);
+      // falló: limpiar token y estado de usuario
       localStorage.removeItem('token');
+      setUser(null);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    // on mount: si hay token, intentar obtener perfil
-    const token = localStorage.getItem('token');
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-    refreshProfile();
+    let mounted = true;
 
-    // listener para logout emitido por api interceptor
-    function handleExternalLogout() {
+    const init = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        if (mounted) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+      // si hay token, intentar cargar perfil
+      try {
+        await refreshProfile();
+      } catch {
+        // ignore here; refreshProfile ya maneja limpieza
+      }
+    };
+
+    init();
+
+    // Listener global para logout emitido por api interceptor
+    const handleExternalLogout = () => {
       localStorage.removeItem('token');
       setUser(null);
       setLoading(false);
-    }
+    };
     window.addEventListener('auth:logout', handleExternalLogout);
-    return () => window.removeEventListener('auth:logout', handleExternalLogout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  const login = async (email: string, password: string) => {
+    return () => {
+      mounted = false;
+      window.removeEventListener('auth:logout', handleExternalLogout);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshProfile]);
+
+  const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
     try {
       const res = await authService.login(email, password);
@@ -77,22 +90,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (token) {
         localStorage.setItem('token', token);
       }
+      // después de guardar token, refrescar perfil
       await refreshProfile();
+      // opcional: navega a /dashboard aquí si lo quieres (no lo hago en el context)
     } finally {
       setLoading(false);
     }
-  };
+  }, [refreshProfile]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authService.logout();
     } catch {
-      // ignore
+      // ignore errors from backend logout
     } finally {
       localStorage.removeItem('token');
       setUser(null);
     }
-  };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, refreshProfile }}>
@@ -106,4 +121,3 @@ export const useAuth = () => {
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider');
   return ctx;
 };
-

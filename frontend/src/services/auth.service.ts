@@ -1,9 +1,10 @@
 // src/services/auth.service.ts
 import api from './api';
+import type { User } from '../types';
 
 type LoginResponse = {
   token: string;
-  user?: any;
+  user?: User;
 };
 
 export const authService = {
@@ -27,5 +28,5 @@ export const authService = {
   /**
    * Get current profile: GET /profile
    */
-  profile: () => api.get('/profile'),
+  profile: () => api.get<User>('/profile'),
 };

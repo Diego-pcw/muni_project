@@ -11,33 +11,48 @@ type Form = {
   celular: string;
   direccion: string;
   asociacion?: string;
-  propiedad: boolean;
-  titulo: boolean;
-  reg_publico: boolean;
+  propiedad?: boolean;
+  titulo?: boolean;
+  reg_publico?: boolean;
   charlas: 'virtual' | 'presencial' | 'ninguno';
+  adicional?: string;
 };
 
 export default function FormularioCreate(): JSX.Element {
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Form>({
-    defaultValues: { propiedad: false, titulo: false, reg_publico: false, charlas: 'ninguno' }
-  });
   const navigate = useNavigate();
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Form>({
+    defaultValues: {
+      propiedad: false,
+      titulo: false,
+      reg_publico: false,
+      charlas: 'ninguno',
+      adicional: '',
+    }
+  });
 
   const onSubmit = async (data: Form) => {
     try {
-      const res = await formularioService.create(data);
+      const payload: Partial<Form> = {
+        ...data,
+        // asegurar booleanos
+        propiedad: Boolean(data.propiedad),
+        titulo: Boolean(data.titulo),
+        reg_publico: Boolean(data.reg_publico),
+      };
+
+      const res = await formularioService.create(payload);
       alert('Formulario creado: ' + (res.data?.data?.id ?? 'OK'));
-      // navegar a la lista
       navigate('/formularios');
     } catch (err: any) {
-      console.error(err);
-      alert('Error: ' + JSON.stringify(err.response?.data || err.message || err));
+      console.error('create error', err);
+      alert(err?.response?.data?.message || JSON.stringify(err?.response?.data) || 'Error al crear formulario');
     }
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, maxWidth: 720, margin: '0 auto' }}>
       <h2>Crear Formulario</h2>
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-field">
           <label>Nombres y apellidos</label>
@@ -87,6 +102,11 @@ export default function FormularioCreate(): JSX.Element {
             <option value="presencial">presencial</option>
             <option value="ninguno">ninguno</option>
           </select>
+        </div>
+
+        <div className="form-field" style={{ marginTop: 12 }}>
+          <label>Adicional (opcional)</label>
+          <textarea {...register('adicional')} rows={3} />
         </div>
 
         <div style={{ marginTop: 12 }}>

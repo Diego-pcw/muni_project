@@ -13,14 +13,17 @@ export default function Register(): JSX.Element {
 
   const onSubmit = async (data: Form) => {
     try {
-      // incluye password_confirmation si no lo envía el backend, opcional
+      // incluir password_confirmation por compatibilidad (muchos backends lo esperan)
       const payload = { ...data, password_confirmation: data.password };
       await authService.register(payload);
       alert('Registro exitoso. Ahora inicia sesión.');
       navigate('/login');
     } catch (err: any) {
       console.error('register error', err);
-      alert(err?.response?.data?.message || JSON.stringify(err?.response?.data) || 'Error en registro');
+      const msg = err?.response?.data?.message
+        || (err?.response?.data?.errors ? JSON.stringify(err.response.data.errors) : null)
+        || 'Error en registro';
+      alert(msg);
     }
   };
 
@@ -42,7 +45,7 @@ export default function Register(): JSX.Element {
 
         <div className="form-field">
           <label>Contraseña</label>
-          <input type="password" {...register('password', { required: 'Contraseña requerida', minLength: 6 })} />
+          <input type="password" {...register('password', { required: 'Contraseña requerida', minLength: { value: 6, message: 'Mínimo 6 caracteres' }})} />
           {errors.password && <small style={{ color: 'red' }}>{errors.password.message}</small>}
         </div>
 
@@ -60,3 +63,4 @@ export default function Register(): JSX.Element {
     </div>
   );
 }
+
