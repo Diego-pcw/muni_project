@@ -2,6 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import HeroSection from '../components/HeroSection';
+import heroImg from '../assets/pollos.jpeg'; // <-- importa la imagen
 
 export default function UserHome(): JSX.Element {
   const { user } = useAuth();
@@ -35,21 +37,19 @@ export default function UserHome(): JSX.Element {
 
         {/* Área de Contenido */}
         <div className="content-area">
+          <HeroSection
+            backgroundImage={heroImg}
+            title="Sistema Avícola Municipal"
+            subtitle="PROYECTO DE MEJORAMIENTO DE LOS SERVICIOS DE APOYO AL DESARROLLO PRODUCTIVO..."
+          >
+            {/* optional children: botones CTA */}
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 8 }}>
+              <Link to="/comunicados" className="btn btn-outline">Ver comunicados</Link>
+              <Link to="/formularios/create" className="btn btn-primary">Registrar ahora</Link>
+            </div>
+          </HeroSection>
           {/* Sección de Bienvenida con imagen de fondo */}
           <div className="welcome-section">
-            <div style={{
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              bottom: 0,
-              width: '40%',
-              backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 400 300\'%3E%3Crect width=\'400\' height=\'300\' fill=\'%23e0f2fe\'/%3E%3Cpath d=\'M200 50c-20 0-40 10-50 25v175c0 20 15 30 25 30h50c20 0 35-15 35-35V75c-10-15-30-25-60-25z\' fill=\'%23fff\' opacity=\'0.8\'/%3E%3Ccircle cx=\'200\' cy=\'80\' r=\'15\' fill=\'%23f59e0b\'/%3E%3Cpath d=\'M180 90h40v10h-40z\' fill=\'%230ea5e9\'/%3E%3C/svg%3E")',
-              backgroundSize: 'contain',
-              backgroundRepeat: 'no-repeat',
-              backgroundPosition: 'center',
-              opacity: 0.1,
-              borderRadius: '12px'
-            }}></div>
             <div style={{ position: 'relative', zIndex: 2 }}>
               <h1 className="welcome-title">
                 🐔 Sistema Avícola Municipal

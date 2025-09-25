@@ -1,9 +1,9 @@
-// src/pages/Comunicados/ComunicadoEdit.tsx
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { comunicadoService } from '../../services/comunicado.service';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Comunicado } from '../../types';
+import '../../styles/comunicados.shared.css';
 
 type FormInputs = {
   titulo: string;
@@ -29,8 +29,8 @@ export default function ComunicadoEdit(): JSX.Element {
   const imagenFiles = watch('imagen');
   const [preview, setPreview] = useState<string | null>(null);
   useEffect(() => {
-    if (imagenFiles && imagenFiles.length > 0) {
-      const file = imagenFiles[0];
+    if (imagenFiles && (imagenFiles as any).length > 0) {
+      const file = (imagenFiles as any)[0] as File;
       const url = URL.createObjectURL(file);
       setPreview(url);
       return () => URL.revokeObjectURL(url);
@@ -100,119 +100,115 @@ export default function ComunicadoEdit(): JSX.Element {
     }
   };
 
-  if (loading) return <div style={{ padding: 20 }}>Cargando...</div>;
+  if (loading) {
+    return (
+      <div className="comunicado-page">
+        <div className="comunicado-card comunicado-center" style={{ padding: 28 }}>
+          <div className="loading" aria-live="polite">Cargando...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div style={{ padding: 20, maxWidth: 900, margin: '0 auto' }}>
-      <h2>Editar Comunicado</h2>
-
-      <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" noValidate>
-        <div style={{ marginBottom: 10 }}>
-          <label>Título*</label>
-          <input {...register('titulo', { required: 'El título es obligatorio', maxLength: { value: 255, message: 'Máx 255 caracteres' } })} />
-          {errors.titulo && <small style={{ color: 'red' }}>{errors.titulo.message}</small>}
+    <div className="comunicado-page">
+      <div className="comunicado-card">
+        <div className="comunicado-card-header">
+          <h2 className="comunicado-title">Editar Comunicado</h2>
+          <p className="comunicado-subtitle">Actualiza los datos del comunicado</p>
         </div>
 
-        <div style={{ marginBottom: 10 }}>
-          <label>Imagen actual</label>
-          {existingImageUrl ? (
-            <div style={{ marginBottom: 8 }}>
-              <img
-                src={existingImageUrl}
-                alt="actual"
-                style={{ maxWidth: 300, maxHeight: 200, objectFit: 'cover' }}
-              />
+        <div className="comunicado-body">
+          <form className="comunicado-form" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data" noValidate>
+            <div className="comunicado-field comunicado-field-full">
+              <label className="comunicado-label">Título*</label>
+              <input className="comunicado-input" {...register('titulo', { required: 'El título es obligatorio', maxLength: { value: 255, message: 'Máx 255 caracteres' } })} />
+              {errors.titulo && <small className="comunicado-error">{errors.titulo.message}</small>}
             </div>
-          ) : (
-            <div style={{ marginBottom: 8, color: '#666' }}>
-              No hay imagen asociada
+
+            <div className="comunicado-field comunicado-field-full">
+              <label className="comunicado-label">Imagen actual</label>
+              {existingImageUrl ? (
+                <div style={{ marginBottom: 8 }}>
+                  <div className="comunicado-image-preview" aria-hidden>
+                    <img src={existingImageUrl} alt="actual" />
+                  </div>
+                </div>
+              ) : (
+                <div style={{ marginBottom: 8, color: '#666' }}>No hay imagen asociada</div>
+              )}
+
+              <label className="comunicado-label">Reemplazar imagen (jpg, png | &lt;= 2MB)</label>
+              <input className="comunicado-file" type="file" accept="image/jpeg,image/png" {...register('imagen', {
+                validate: {
+                  lessThan2MB: (files: FileList) =>
+                    !files[0] || files[0].size <= 2 * 1024 * 1024 || 'El archivo debe pesar menos de 2MB',
+                  acceptedFormats: (files: FileList) =>
+                    !files[0] ||
+                    ['image/jpeg', 'image/png'].includes(files[0].type) ||
+                    'Solo se permiten imágenes JPG o PNG',
+                },
+              })} />
+              {errors.imagen && <p className="comunicado-error" style={{ marginTop: 4 }}>{(errors.imagen as any).message as string}</p>}
+
+              {preview && (
+                <div style={{ marginTop: 8 }}>
+                  <small>Preview (nueva imagen):</small>
+                  <div className="comunicado-image-preview" aria-hidden>
+                    <img src={preview} alt="preview" />
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        
-          <label>Reemplazar imagen (jpg, png | &lt;= 2MB)</label>
-          <input
-            type="file"
-            accept="image/jpeg,image/png"
-            {...register('imagen', {
-              validate: {
-                lessThan2MB: (files) =>
-                  !files[0] || files[0].size <= 2 * 1024 * 1024 || 'El archivo debe pesar menos de 2MB',
-                acceptedFormats: (files) =>
-                  !files[0] ||
-                  ['image/jpeg', 'image/png'].includes(files[0].type) ||
-                  'Solo se permiten imágenes JPG o PNG',
-              },
-            })}
-          />
-          {errors.imagen && (
-            <p style={{ color: 'red', marginTop: 4 }}>{errors.imagen.message as string}</p>
-          )}
-        
-          {preview && (
-            <div style={{ marginTop: 8 }}>
-              <small>Preview (nueva imagen):</small>
-              <div>
-                <img
-                  src={preview}
-                  alt="preview"
-                  style={{ maxWidth: 300, maxHeight: 200, objectFit: 'cover' }}
-                />
-              </div>
+
+            <div className="comunicado-field comunicado-field-full">
+              <label className="comunicado-label">Descripción*</label>
+              <textarea className="comunicado-textarea" {...register('descripcion', { required: 'La descripción es obligatoria' })} rows={5} />
+              {errors.descripcion && <small className="comunicado-error">{errors.descripcion.message}</small>}
             </div>
-          )}
+
+            <div className="comunicado-field">
+              <label className="comunicado-label">Fecha publicación*</label>
+              <input className="comunicado-input" {...register('fecha_publicacion', { required: 'Fecha obligatoria', pattern: { value: /^\d{4}-\d{2}-\d{2}$/, message: 'Formato YYYY-MM-DD' } })} placeholder="YYYY-MM-DD" />
+              {errors.fecha_publicacion && <small className="comunicado-error">{errors.fecha_publicacion.message}</small>}
+            </div>
+
+            <div className="comunicado-field">
+              <label className="comunicado-label">Hora publicación*</label>
+              <input className="comunicado-input" {...register('hora_publicacion', { required: 'Hora obligatoria', pattern: { value: /^([01]\d|2[0-3]):([0-5]\d)$/, message: 'Formato HH:mm' } })} placeholder="HH:mm" />
+              {errors.hora_publicacion && <small className="comunicado-error">{errors.hora_publicacion.message}</small>}
+            </div>
+
+            <div className="comunicado-field">
+              <label className="comunicado-label">Publicador*</label>
+              <input className="comunicado-input" {...register('publicador', { required: 'Campo requerido', maxLength: 255 })} />
+              {errors.publicador && <small className="comunicado-error">{errors.publicador.message}</small>}
+            </div>
+
+            <div className="comunicado-field">
+              <label className="comunicado-label">Entidad*</label>
+              <input className="comunicado-input" {...register('entidad', { required: 'Campo requerido', maxLength: 255 })} />
+              {errors.entidad && <small className="comunicado-error">{errors.entidad.message}</small>}
+            </div>
+
+            <div className="comunicado-field comunicado-field-full">
+              <label className="comunicado-label">Estado*</label>
+              <select className="comunicado-select" {...register('estado', { required: true })}>
+                <option value="activo">activo</option>
+                <option value="inactivo">inactivo</option>
+              </select>
+            </div>
+
+            <div className="comunicado-field comunicado-field-full comunicado-actions">
+              <button className="btn btn-primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Actualizando...' : 'Actualizar Comunicado'}
+              </button>
+              <button type="button" className="btn" onClick={() => navigate('/comunicados')}>Cancelar</button>
+            </div>
+          </form>
         </div>
-
-        <div style={{ marginBottom: 10 }}>
-          <label>Descripción*</label>
-          <textarea {...register('descripcion', { required: 'La descripción es obligatoria' })} rows={5} />
-          {errors.descripcion && <small style={{ color: 'red' }}>{errors.descripcion.message}</small>}
-        </div>
-
-        <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-          <div style={{ flex: 1 }}>
-            <label>Fecha publicación*</label>
-            <input {...register('fecha_publicacion', { required: 'Fecha obligatoria', pattern: { value: /^\d{4}-\d{2}-\d{2}$/, message: 'Formato YYYY-MM-DD' } })} placeholder="YYYY-MM-DD" />
-            {errors.fecha_publicacion && <small style={{ color: 'red' }}>{errors.fecha_publicacion.message}</small>}
-          </div>
-
-          <div style={{ width: 140 }}>
-            <label>Hora publicación*</label>
-            <input {...register('hora_publicacion', { required: 'Hora obligatoria', pattern: { value: /^([01]\d|2[0-3]):([0-5]\d)$/, message: 'Formato HH:mm' } })} placeholder="HH:mm" />
-            {errors.hora_publicacion && <small style={{ color: 'red' }}>{errors.hora_publicacion.message}</small>}
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: 12, marginBottom: 10 }}>
-          <div style={{ flex: 1 }}>
-            <label>Publicador*</label>
-            <input {...register('publicador', { required: 'Campo requerido', maxLength: 255 })} />
-            {errors.publicador && <small style={{ color: 'red' }}>{errors.publicador.message}</small>}
-          </div>
-
-          <div style={{ flex: 1 }}>
-            <label>Entidad*</label>
-            <input {...register('entidad', { required: 'Campo requerido', maxLength: 255 })} />
-            {errors.entidad && <small style={{ color: 'red' }}>{errors.entidad.message}</small>}
-          </div>
-        </div>
-
-        <div style={{ marginBottom: 16 }}>
-          <label>Estado*</label>
-          <select {...register('estado', { required: true })}>
-            <option value="activo">activo</option>
-            <option value="inactivo">inactivo</option>
-          </select>
-        </div>
-
-        <div>
-          <button type="submit" disabled={isSubmitting} style={{ padding: '8px 12px' }}>
-            {isSubmitting ? 'Actualizando...' : 'Actualizar Comunicado'}
-          </button>
-          <button type="button" onClick={() => navigate('/comunicados')} style={{ marginLeft: 8 }}>
-            Cancelar
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
+

@@ -1,8 +1,8 @@
-// src/pages/Login.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import '../styles/users.shared.css';
 
 type Form = { email: string; password: string };
 
@@ -24,28 +24,34 @@ export default function Login(): JSX.Element {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 520, margin: '0 auto' }}>
-      <h2>Iniciar sesión</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-field">
-          <label>Email</label>
-          <input type="email" {...register('email', { required: 'Email requerido' })} />
-          {errors.email && <small style={{ color: 'red' }}>{errors.email.message}</small>}
+    <div className="auth-page">
+      <div className="auth-card" role="main" aria-labelledby="loginTitle">
+        <div className="auth-header">
+          <h2 id="loginTitle" className="auth-title">Iniciar sesión</h2>
+          <div className="auth-subtitle">Ingresa con tus credenciales</div>
         </div>
 
-        <div className="form-field">
-          <label>Contraseña</label>
-          <input type="password" {...register('password', { required: 'Contraseña requerida' })} />
-          {errors.password && <small style={{ color: 'red' }}>{errors.password.message}</small>}
-        </div>
+        <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="form-field">
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" {...register('email', { required: 'Email requerido' })} />
+            {errors.email && <small className="field-error">{errors.email.message}</small>}
+          </div>
 
-        <div style={{ marginTop: 12 }}>
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting || loading}>
-            {isSubmitting || loading ? 'Cargando...' : 'Entrar'}
-          </button>
-          <Link to="/register" style={{ marginLeft: 8 }} className="btn">Registrarse</Link>
-        </div>
-      </form>
+          <div className="form-field">
+            <label htmlFor="password">Contraseña</label>
+            <input id="password" type="password" {...register('password', { required: 'Contraseña requerida' })} />
+            {errors.password && <small className="field-error">{errors.password.message}</small>}
+          </div>
+
+          <div className="auth-actions">
+            <button className="btn btn-primary" type="submit" disabled={isSubmitting || loading}>
+              {isSubmitting || loading ? 'Cargando...' : 'Entrar'}
+            </button>
+            <Link to="/register" className="btn btn-outline">Registrarse</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

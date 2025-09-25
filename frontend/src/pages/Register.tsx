@@ -1,8 +1,8 @@
-// src/pages/Register.tsx
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { authService } from '../services/auth.service';
 import { useNavigate, Link } from 'react-router-dom';
+import '../styles/users.shared.css';
 
 type Form = { name: string; email: string; password: string; password_confirmation?: string; rol?: string };
 
@@ -28,39 +28,46 @@ export default function Register(): JSX.Element {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 520, margin: '0 auto' }}>
-      <h2>Registro</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-field">
-          <label>Nombre</label>
-          <input {...register('name', { required: 'Nombre requerido' })} />
-          {errors.name && <small style={{ color: 'red' }}>{errors.name.message}</small>}
+    <div className="auth-page">
+      <div className="auth-card" role="main" aria-labelledby="registerTitle">
+        <div className="auth-header">
+          <h2 id="registerTitle" className="auth-title">Registro</h2>
+          <div className="auth-subtitle">Crea tu cuenta para acceder al sistema</div>
         </div>
 
-        <div className="form-field">
-          <label>Email</label>
-          <input type="email" {...register('email', { required: 'Email requerido' })} />
-          {errors.email && <small style={{ color: 'red' }}>{errors.email.message}</small>}
-        </div>
+        <form className="auth-form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <div className="form-field">
+            <label htmlFor="name">Nombre</label>
+            <input id="name" type="text" {...register('name', { required: 'Nombre requerido' })} />
+            {errors.name && <small className="field-error">{errors.name.message}</small>}
+          </div>
 
-        <div className="form-field">
-          <label>Contraseña</label>
-          <input type="password" {...register('password', { required: 'Contraseña requerida', minLength: { value: 6, message: 'Mínimo 6 caracteres' }})} />
-          {errors.password && <small style={{ color: 'red' }}>{errors.password.message}</small>}
-        </div>
+          <div className="form-field">
+            <label htmlFor="email">Email</label>
+            <input id="email" type="email" {...register('email', { required: 'Email requerido' })} />
+            {errors.email && <small className="field-error">{errors.email.message}</small>}
+          </div>
 
-        <div className="form-field">
-          <label>Confirmar contraseña</label>
-          <input type="password" {...register('password_confirmation', { validate: val => val === pw || 'Las contraseñas no coinciden' })} />
-          {errors.password_confirmation && <small style={{ color: 'red' }}>{errors.password_confirmation.message}</small>}
-        </div>
+          <div className="form-field">
+            <label htmlFor="password">Contraseña</label>
+            <input id="password" type="password" {...register('password', { required: 'Contraseña requerida', minLength: { value: 6, message: 'Mínimo 6 caracteres' }})} />
+            {errors.password && <small className="field-error">{errors.password.message}</small>}
+          </div>
 
-        <div style={{ marginTop: 12 }}>
-          <button className="btn btn-primary" type="submit" disabled={isSubmitting}>Registrar</button>
-          <Link to="/login" style={{ marginLeft: 8 }} className="btn">Ir a login</Link>
-        </div>
-      </form>
+          <div className="form-field">
+            <label htmlFor="password_confirmation">Confirmar contraseña</label>
+            <input id="password_confirmation" type="password" {...register('password_confirmation', { validate: val => val === pw || 'Las contraseñas no coinciden' })} />
+            {errors.password_confirmation && <small className="field-error">{errors.password_confirmation.message}</small>}
+          </div>
+
+          <div className="auth-actions">
+            <button className="btn btn-primary" type="submit" disabled={isSubmitting}>Registrar</button>
+            <Link to="/login" className="btn btn-outline">Ir a login</Link>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
+
 

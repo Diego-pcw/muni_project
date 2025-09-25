@@ -1,4 +1,5 @@
 // src/pages/DebugServices.tsx
+/** 
 import React from 'react';
 import { authService } from '../services/auth.service';
 import { formularioService } from '../services/formulario.service';
@@ -48,3 +49,4 @@ export default function DebugServices() {
     </div>
   );
 }
+*/

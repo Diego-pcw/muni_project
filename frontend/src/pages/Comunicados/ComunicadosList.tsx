@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { comunicadoService } from '../../services/comunicado.service';
 import type { Comunicado, Paginated } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import '../../styles/comunicados.shared.css';
 
 export default function ComunicadosList(): JSX.Element {
   const { user } = useAuth();
@@ -55,86 +56,97 @@ export default function ComunicadosList(): JSX.Element {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Comunicados</h2>
-        {/* Mostrar botón crear sólo a admin */}
-        {isAdmin ? (
-          <Link to="/comunicados/create" className="btn btn-primary">Nuevo comunicado</Link>
+    <div className="comunicados-page">
+      <div className="comunicados-card" role="region" aria-label="Listado de comunicados">
+        <div className="card-header">
+          <div>
+            <h2 className="title">Comunicados</h2>
+            <div className="subtitle">Listado público de comunicados</div>
+          </div>
+
+          <div>
+            {isAdmin ? (
+              <Link to="/comunicados/create" className="btn btn-primary">Nuevo comunicado</Link>
+            ) : (
+              <div style={{ width: 120 }} /> /* placeholder para alinear */
+            )}
+          </div>
+        </div>
+
+        <div className="comunicados-tools">
+          {/* Mantuvimos funcionalidad pero con clases para estilizar */}
+          {/* Search not present here (server side list uses pagination) - placeholder kept */}
+        </div>
+
+        {loading ? (
+          <div style={{ padding: 18, textAlign: 'center' }}>Cargando...</div>
+        ) : error ? (
+          <div style={{ padding: 18, color: 'red' }}>{error}</div>
         ) : (
-          <div /> /* placeholder para alinear */
+          <>
+            <div className="table-wrapper">
+              <table className="comunicados-table table-dense" aria-label="Listado de comunicados">
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Publicador</th>
+                    <th>Entidad</th>
+                    <th>Estado</th>
+                    <th>Imagen</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.length === 0 ? (
+                    <tr><td colSpan={8} style={{ padding: 12 }}>No hay comunicados</td></tr>
+                  ) : (
+                    items.map((c) => (
+                      <tr key={c.id}>
+                        <td style={{ maxWidth: 300 }}>{c.titulo}</td>
+                        <td>{c.fecha_publicacion ? c.fecha_publicacion.slice(0, 10) : '-'}</td>
+                        <td>{c.hora_publicacion ? c.hora_publicacion.slice(0, 5) : '-'}</td>
+                        <td style={{ maxWidth: 160 }}>{c.publicador}</td>
+                        <td style={{ maxWidth: 160 }}>{c.entidad}</td>
+                        <td>{c.estado}</td>
+                        <td>
+                          {c.imagen ? (
+                            <span className="thumb" aria-hidden>
+                              <img
+                                src={`${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '')}/storage/${c.imagen}`}
+                                alt="mini"
+                              />
+                            </span>
+                          ) : '-'}
+                        </td>
+                        <td>
+                          <div className="actions">
+                            <Link to={`/comunicados/${c.id}`} className="btn">Ver</Link>
+                            {isAdmin && (
+                              <>
+                                <Link to={`/comunicados/${c.id}/edit`} className="btn">Editar</Link>
+                                <button className="btn btn-danger" onClick={() => handleDelete(c.id)}>Eliminar</button>
+                              </>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="pagination-row" role="navigation" aria-label="Paginación comunicados">
+              <button className="btn" onClick={() => setPage((s) => Math.max(1, s - 1))} disabled={page <= 1}>Anterior</button>
+              <span>Página {page} de {totalPages} — total: {total}</span>
+              <button className="btn" onClick={() => setPage((s) => Math.min(totalPages, s + 1))} disabled={page >= totalPages}>Siguiente</button>
+            </div>
+          </>
         )}
       </div>
-
-      {loading ? (
-        <div className="card">Cargando...</div>
-      ) : error ? (
-        <div className="card" style={{ color: 'red' }}>{error}</div>
-      ) : (
-        <>
-          <div className="card">
-            <table className="table" style={{ width: '100%' }}>
-              <thead>
-                <tr>
-                  <th>Título</th>
-                  <th>Fecha</th>
-                  <th>Hora</th>
-                  <th>Publicador</th>
-                  <th>Entidad</th>
-                  <th>Estado</th>
-                  <th>Imagen</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.length === 0 ? (
-                  <tr><td colSpan={8} style={{ padding: 12 }}>No hay comunicados</td></tr>
-                ) : (
-                  items.map((c) => (
-                    <tr key={c.id}>
-                      <td>{c.titulo}</td>
-                      <td>{c.fecha_publicacion ? c.fecha_publicacion.slice(0,10) : '-'}</td>
-                      <td>{c.hora_publicacion ? c.hora_publicacion.slice(0,5) : '-'}</td>
-                      <td>{c.publicador}</td>
-                      <td>{c.entidad}</td>
-                      <td>{c.estado}</td>
-                      <td>
-                        {c.imagen ? (
-                          <img
-                            src={`${(import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000').replace(/\/api\/?$/, '')}/storage/${c.imagen}`}
-                            alt="mini"
-                            style={{ maxWidth: 80, maxHeight: 60, objectFit: 'cover' }}
-                          />
-                        ) : '-'}
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: 8 }}>
-                          {/* "Ver" disponible para todos (lleva al detalle público) */}
-                          <Link to={`/comunicados/${c.id}`} className="btn">Ver</Link>
-
-                          {/* Edit / Delete sólo para admin */}
-                          {isAdmin && (
-                            <>
-                              <Link to={`/comunicados/${c.id}/edit`} className="btn">Editar</Link>
-                              <button className="btn btn-danger" onClick={() => handleDelete(c.id)}>Eliminar</button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div style={{ marginTop: 12, display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button className="btn" onClick={() => setPage((s) => Math.max(1, s - 1))} disabled={page <= 1}>Anterior</button>
-            <span>Página {page} de {totalPages} — total: {total}</span>
-            <button className="btn" onClick={() => setPage((s) => Math.min(totalPages, s + 1))} disabled={page >= totalPages}>Siguiente</button>
-          </div>
-        </>
-      )}
     </div>
   );
 }
+
