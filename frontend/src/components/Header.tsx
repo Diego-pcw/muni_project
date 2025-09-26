@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logomuni.png';
 
 export default function Header(): JSX.Element {
   const { user, logout } = useAuth();
@@ -24,9 +25,12 @@ export default function Header(): JSX.Element {
         {/* Logo Section */}
         <div className="logo-section">
           <div className="logo">
-            <div className="logo-icon">🏛️</div>
-            <h2 className="brand-name">MUNICGAL</h2>
-            <p className="brand-subtitle">Portal Ciudadano Digital</p>
+            {/* Logo en imagen */}
+            <img src={logo} alt="Logo Empresa" className="logo-img" />
+            <div className="logo-text">
+              <h2 className="brand-name">MUNICIPALIDAD DISTRITAL</h2>
+              <p className="brand-subtitle">CRNL. GREGORIO ALBARRACÍN LANCHIPA</p>
+            </div>
           </div>
         </div>
 

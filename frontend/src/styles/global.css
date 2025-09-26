@@ -40,6 +40,10 @@
   padding: 0;
 }
 
+html {
+  background: linear-gradient(135deg, var(--light-blue) 0%, var(--soft-white) 100%);
+}
+
 html,
 body,
 #root {
@@ -88,28 +92,42 @@ body {
   color: var(--pure-white);
 }
 
-.logo {
-  margin-bottom: 12px;
+.logo-section {
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid var(--border-light);
+  background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+  color: var(--pure-white);
 }
 
-.logo-icon {
-  font-size: 48px;
-  margin-bottom: 8px;
+.logo {
+  display: flex;
+  flex-direction: column; /* texto debajo del logo */
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-img {
+  width: 64px;   /* tamaño más grande para sidebar */
+  height: 64px;
+  object-fit: contain;
+  border-radius: 50%; /* opcional */
 }
 
 .brand-name {
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 4px;
-  letter-spacing: -0.025em;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff; /* porque fondo azul */
 }
 
 .brand-subtitle {
   font-size: 12px;
   opacity: 0.9;
+  margin: 0;
   font-weight: 500;
+  color: #e2e8f0; /* más legible sobre azul */
 }
-
 .sidebar-nav {
   flex: 1;
   padding: 24px 0;

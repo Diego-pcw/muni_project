@@ -3,6 +3,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { formularioService } from '../../services/formulario.service';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '../../context/ToastContext'; 
 import '../../styles/formularios.shared.css';
 
 type Form = {
@@ -21,6 +22,7 @@ type Form = {
 
 export default function FormularioCreate(): JSX.Element {
   const navigate = useNavigate();
+  const { push } = useToast(); 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Form>({
     defaultValues: {
       propiedad: false,
@@ -35,18 +37,22 @@ export default function FormularioCreate(): JSX.Element {
     try {
       const payload: Partial<Form> = {
         ...data,
-        // asegurar booleanos
         propiedad: Boolean(data.propiedad),
         titulo: Boolean(data.titulo),
         reg_publico: Boolean(data.reg_publico),
       };
 
       const res = await formularioService.create(payload);
-      alert('Formulario creado: ' + (res.data?.data?.id ?? 'OK'));
+
+      // 👇 antes era alert, ahora es toast
+      push('Formulario creado con éxito', 'success');
+
       navigate('/formularios');
     } catch (err: any) {
       console.error('create error', err);
-      alert(err?.response?.data?.message || JSON.stringify(err?.response?.data) || 'Error al crear formulario');
+
+      // 👇 mismo para error
+      push(err?.response?.data?.message || 'Error al crear formulario', 'error');
     }
   };
 

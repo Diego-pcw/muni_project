@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom';
 import { formularioService } from '../../services/formulario.service';
 import type { Formulario, Paginated } from '../../types';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import '../../styles/formularios.shared.css';
 
 export default function FormulariosList(): JSX.Element {
   const { user } = useAuth();
   const isAdmin = useMemo(() => user?.rol === 'admin', [user]);
+  const { push } = useToast();
 
   const [items, setItems] = useState<Formulario[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -40,7 +42,9 @@ export default function FormulariosList(): JSX.Element {
       setTotal(data.total ?? (data.data?.length ?? 0));
     } catch (err: any) {
       console.error(err);
-      setError(err?.response?.data?.message || err.message || 'Error cargando formularios');
+      const msg = err?.response?.data?.message || err?.message || 'Error cargando formularios';
+      setError(msg);
+      push(String(msg), 'error');
     } finally {
       setLoading(false);
     }
@@ -64,11 +68,12 @@ export default function FormulariosList(): JSX.Element {
     try {
       await formularioService.destroy(id);
       setItems((s) => s.filter((x) => x.id !== id));
-      alert('Formulario eliminado');
+      push('Formulario eliminado', 'success');
       setTotal(t => Math.max(0, t - 1));
     } catch (err: any) {
       console.error(err);
-      alert(err?.response?.data?.message || 'Error al eliminar');
+      const msg = err?.response?.data?.message || 'Error al eliminar';
+      push(String(msg), 'error');
     }
   };
 

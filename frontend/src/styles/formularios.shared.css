@@ -349,6 +349,7 @@
   }
 }
 
+
 /* ================= SUGERENCIAS DE USO (no son CSS) =================
  - En tu JSX utiliza <table className="form-list-table"> (o añade .table-dense / .table-wide).
  - Si necesitas que la "Dirección" o "Nombres" envuelvan en pantallas intermedias,
@@ -357,3 +358,30 @@
  - Si prefieres que la tabla fuerce columnas iguales, cambia table-layout: fixed; en .form-list-table
    y ajusta th { width: 15% } etc. (pero con `fixed` se pierde flexibilidad de contenido).
 ================================================================== */
+
+/* Toast / banner (global) */
+.toast-banner {
+  min-width: 260px;
+  max-width: 900px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.12);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 700;
+  pointer-events: auto;
+  transform-origin: center top;
+  animation: toast-pop .18s ease;
+}
+.toast-icon { font-size: 16px; opacity: 0.95; }
+
+.toast-success { background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue)); }
+.toast-error   { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.toast-info    { background: linear-gradient(90deg, #64748b, #94a3b8); }
+
+@keyframes toast-pop {
+  from { opacity: 0; transform: translateY(-8px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}

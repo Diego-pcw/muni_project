@@ -5,12 +5,14 @@ import { formularioService } from '../../services/formulario.service';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Formulario } from '../../types';
 import '../../styles/formularios.shared.css';
+import { useToast } from '../../context/ToastContext';
 
 export default function FormularioEdit(): JSX.Element {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm<Partial<Formulario>>();
+  const { push } = useToast(); // <-- toast
 
   useEffect(() => {
     if (!id) return;
@@ -29,7 +31,8 @@ export default function FormularioEdit(): JSX.Element {
       })
       .catch((err) => {
         console.error(err);
-        alert('Error cargando formulario');
+        // usar toast en vez de alert
+        push('Error cargando formulario', 'error');
       })
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -45,11 +48,16 @@ export default function FormularioEdit(): JSX.Element {
         reg_publico: Boolean(data.reg_publico),
       };
       await formularioService.update(Number(id), payload);
-      alert('Formulario actualizado');
+
+      // toast success
+      push('Formulario actualizado', 'success');
+
       navigate('/formularios');
     } catch (err: any) {
       console.error(err);
-      alert('Error: ' + JSON.stringify(err.response?.data || err.message));
+      // preferir mensaje devuelto por backend si existe
+      const msg = err?.response?.data?.message || err.message || 'Error al actualizar formulario';
+      push(String(msg), 'error');
     }
   };
 
@@ -151,4 +159,3 @@ export default function FormularioEdit(): JSX.Element {
     </div>
   );
 }
-
