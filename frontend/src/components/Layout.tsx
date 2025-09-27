@@ -69,7 +69,9 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
                   borderRadius: '6px',
                   fontSize: '12px'
                 }}>
-                  📞 054-123456
+                  📞 +51 935 915 159 <br></br>
+                  📞 +51 925 409 626 <br></br>
+                  📞 +51 992 725 511
                 </div>
               </div>
             </div>
@@ -141,10 +143,7 @@ export default function Layout({ children }: { children?: React.ReactNode }) {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ fontSize: '12px', opacity: '0.8' }}>
-                  ✅ 150+ Productores beneficiados
-                </div>
-                <div style={{ fontSize: '12px', opacity: '0.8' }}>
-                  ✅ 25 Módulos productivos
+                  ✅ 500+ Productores beneficiados
                 </div>
                 <div style={{ fontSize: '12px', opacity: '0.8' }}>
                   ✅ Capacitación especializada

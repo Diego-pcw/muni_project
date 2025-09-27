@@ -5,6 +5,10 @@ import { useAuth } from '../context/AuthContext';
 import HeroSection from '../components/HeroSection';
 import heroImg from '../assets/pollos.jpeg'; // <-- importa la imagen
 
+// Importa el componente y estilos del FAB de WhatsApp
+import WhatsAppButton from '../components/WhatsAppButton';
+import '../styles/whatsapp.css';
+
 export default function UserHome(): JSX.Element {
   const { user } = useAuth();
 
@@ -48,6 +52,7 @@ export default function UserHome(): JSX.Element {
               <Link to="/formularios/create" className="btn btn-primary">Registrar ahora</Link>
             </div>
           </HeroSection>
+
           {/* Sección de Bienvenida con imagen de fondo */}
           <div className="welcome-section">
             <div style={{ position: 'relative', zIndex: 2 }}>
@@ -93,30 +98,6 @@ export default function UserHome(): JSX.Element {
               <span className="card-action">Ver formularios →</span>
             </Link>
           </div>
-
-          {/* Estadísticas Rápidas */}
-          {/*
-          <div className="quick-stats">
-            <h3 className="stats-title">📈 Impacto del Proyecto Avícola</h3>
-            <div className="stats-grid">
-              <div className="stat-item">
-                <span className="stat-number">150+</span>
-                <span className="stat-label">Productores Beneficiados</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">25</span>
-                <span className="stat-label">Módulos Productivos</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">80%</span>
-                <span className="stat-label">Incremento Productivo</span>
-              </div>
-              <div className="stat-item">
-                <span className="stat-number">12</span>
-                <span className="stat-label">Capacitaciones Realizadas</span>
-              </div>
-            </div>
-          </div>*/}
 
           {/* Información del Proyecto */}
           <div className="welcome-section" style={{ marginTop: '32px' }}>
@@ -188,6 +169,10 @@ export default function UserHome(): JSX.Element {
           </div>
         </div>
       </div>
+
+      {/* WhatsApp floating button (overlay fijo) */}
+      {/* Reemplaza inviteUrl por la URL real de tu grupo: https://chat.whatsapp.com/TU_INVITE_CODE */}
+      <WhatsAppButton inviteUrl="https://chat.whatsapp.com/KfDBeR4z8H49yDN1NjLHEq?mode=ems_share_t" label="Chat comunitario" />
     </div>
   );
 }

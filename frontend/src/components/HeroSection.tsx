@@ -30,7 +30,7 @@ export default function HeroSection({
   const bgStyle: React.CSSProperties = {
     position: 'relative',
     background: backgroundImage
-      ? `linear-gradient(rgba(30,41,59,0.65), rgba(14,165,233,0.75)), url(${backgroundImage})`
+      ? `linear-gradient(rgba(27, 36, 49, 0.65), rgba(82, 183, 230, 0.77)), url(${backgroundImage})`
       : 'linear-gradient(135deg, var(--primary-blue), var(--secondary-blue))',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -96,9 +96,7 @@ export default function HeroSection({
           marginRight: 'auto'
         }}>
           {[
-            { value: '150+', label: 'Productores' },
-            { value: '80%', label: 'Incremento' },
-            { value: '25', label: 'Módulos' }
+            { value: '500+', label: 'Beneficiados' }, //se puede agregar mas
           ].map((s) => (
             <div key={s.label} style={{
               background: 'rgba(255,255,255,0.12)',
