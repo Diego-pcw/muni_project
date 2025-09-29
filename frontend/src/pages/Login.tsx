@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
@@ -11,10 +11,11 @@ export default function Login(): JSX.Element {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<Form>();
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const onSubmit = async (data: Form) => {
     try {
       await login(data.email, data.password);
-      // AuthContext refresca el perfil; luego navegamos
       navigate('/dashboard');
     } catch (err: any) {
       console.error('login error', err);
@@ -38,9 +39,23 @@ export default function Login(): JSX.Element {
             {errors.email && <small className="field-error">{errors.email.message}</small>}
           </div>
 
-          <div className="form-field">
+          <div className="form-field password-field">
             <label htmlFor="password">Contraseña</label>
-            <input id="password" type="password" {...register('password', { required: 'Contraseña requerida' })} />
+            <div className="password-wrapper">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...register('password', { required: 'Contraseña requerida' })}
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label="Mostrar/Ocultar contraseña"
+              >
+                {showPassword ? "🔓" : "🔒"}
+              </button>
+            </div>
             {errors.password && <small className="field-error">{errors.password.message}</small>}
           </div>
 
@@ -55,4 +70,3 @@ export default function Login(): JSX.Element {
     </div>
   );
 }
-

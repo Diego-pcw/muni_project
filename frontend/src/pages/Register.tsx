@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { authService } from '../services/auth.service';
 import { useNavigate, Link } from 'react-router-dom';
@@ -11,9 +11,12 @@ export default function Register(): JSX.Element {
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm<Form>();
   const pw = watch('password');
 
+  // estados para mostrar/ocultar contraseña
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
   const onSubmit = async (data: Form) => {
     try {
-      // incluir password_confirmation por compatibilidad (muchos backends lo esperan)
       const payload = { ...data, password_confirmation: data.password };
       await authService.register(payload);
       alert('Registro exitoso. Ahora inicia sesión.');
@@ -48,26 +51,52 @@ export default function Register(): JSX.Element {
             {errors.email && <small className="field-error">{errors.email.message}</small>}
           </div>
 
-          <div className="form-field">
+          <div className="form-field password-field">
             <label htmlFor="password">Contraseña</label>
-            <input id="password" type="password" {...register('password', { required: 'Contraseña requerida', minLength: { value: 6, message: 'Mínimo 6 caracteres' }})} />
+            <div className="password-wrapper">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                {...register('password', { required: 'Contraseña requerida', minLength: { value: 6, message: 'Mínimo 6 caracteres' }})}
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label="Mostrar/Ocultar contraseña"
+              >
+                {showPassword ? "🔓" : "🔒"}
+              </button>
+            </div>
             {errors.password && <small className="field-error">{errors.password.message}</small>}
           </div>
 
-          <div className="form-field">
+          <div className="form-field password-field">
             <label htmlFor="password_confirmation">Confirmar contraseña</label>
-            <input id="password_confirmation" type="password" {...register('password_confirmation', { validate: val => val === pw || 'Las contraseñas no coinciden' })} />
+            <div className="password-wrapper">
+              <input
+                id="password_confirmation"
+                type={showPasswordConfirm ? "text" : "password"}
+                {...register('password_confirmation', { validate: val => val === pw || 'Las contraseñas no coinciden' })}
+              />
+              <button
+                type="button"
+                className="toggle-password"
+                onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                aria-label="Mostrar/Ocultar contraseña"
+              >
+                {showPasswordConfirm ? "🔓" : "🔒"}
+              </button>
+            </div>
             {errors.password_confirmation && <small className="field-error">{errors.password_confirmation.message}</small>}
           </div>
 
           <div className="auth-actions">
             <button className="btn btn-primary" type="submit" disabled={isSubmitting}>Registrar</button>
-            <Link to="/login" className="btn btn-outline">Ir a login</Link>
+            <Link to="/login" className="btn btn-outline">Ir a Iniciar sesión</Link>
           </div>
         </form>
       </div>
     </div>
   );
 }
-
-

@@ -422,6 +422,27 @@
   font-size: 14px;
 }
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem; /* espacio para el botón */
+}
+
+.toggle-password {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+
 /* small responsive tweaks */
 @media (max-width: 880px) {
   .profile-hero { flex-direction: column; align-items: center; text-align: center; gap: 10px; }

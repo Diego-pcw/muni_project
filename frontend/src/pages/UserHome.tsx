@@ -82,7 +82,7 @@ export default function UserHome(): JSX.Element {
               <span className="card-icon">📝</span>
               <h3 className="card-title">Registro Avícola</h3>
               <p className="card-description">
-                Registra tu emprendimiento avícola y accede a los beneficios del 
+                Registra tus datos y accede a los beneficios del 
                 programa de mejoramiento productivo del distrito.
               </p>
               <span className="card-action">Registrar ahora →</span>
@@ -118,7 +118,7 @@ export default function UserHome(): JSX.Element {
               El <strong>Proyecto de Mejoramiento de los Servicios de Apoyo al Desarrollo Productivo 
               en la Cadena Productiva Avícola</strong> es una iniciativa que busca fortalecer la 
               competitividad de los pequeños y medianos productores avícolas del distrito mediante 
-              asistencia técnica, mejora de infraestructura, y promoción comercial.
+              asistencia técnica, mejora de infraestructura, promoción comercial y asistencia legal.
             </p>
             <div style={{ 
               display: 'grid', 

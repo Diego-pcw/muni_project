@@ -136,17 +136,15 @@ export default function Header(): JSX.Element {
         }}
       >
         <button
+          className="mobile-menu-toggle"
           onClick={toggleSidebar}
-          style={{
-            background: 'none',
-            border: 'none',
-            fontSize: '24px',
-            cursor: 'pointer',
-            padding: '8px'
-          }}
+          aria-label={sidebarOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={sidebarOpen}
+          type="button"
         >
           {sidebarOpen ? '✕' : '☰'}
         </button>
+
         
         <div style={{ textAlign: 'center' }}>
           <h3 style={{ 
@@ -185,7 +183,18 @@ export default function Header(): JSX.Element {
                 }}
                 title="Cerrar Sesión"
               >
-                🚪
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" 
+                   viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" 
+                   stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 3H3v18h7"/>
+                
+                <path d="M15 7l5 5-5 5"/>
+                <path d="M20 12H9"/>
+              </svg>
+
+
+
+
               </button>
             </>
           ) : (

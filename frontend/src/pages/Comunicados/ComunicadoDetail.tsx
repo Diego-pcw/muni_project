@@ -102,7 +102,9 @@ export default function ComunicadoDetail(): JSX.Element {
           <h3 style={{ marginBottom: 8, color: '#333' }}>Descripción</h3>
           <div
             style={{
-              whiteSpace: 'pre-wrap',
+              whiteSpace: 'pre-wrap',      // respeta saltos manuales
+              wordBreak: 'break-word',     // corta palabras largas si exceden el ancho
+              overflowWrap: 'anywhere',    // alternativa moderna para asegurar quiebre
               lineHeight: 1.6,
               color: '#444',
               background: '#fafafa',

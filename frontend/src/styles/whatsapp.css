@@ -1,50 +1,53 @@
-/* WhatsApp floating button - agregar al global.css o nuevo archivo importado */
+/* WhatsApp floating button - redondo con color oficial */
 .whatsapp-fab {
   position: fixed;
   right: 18px;
   bottom: 18px;
   z-index: 1100;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue));
+  justify-content: center;
+  width: 60px;   /* ancho fijo */
+  height: 60px;  /* alto fijo */
+  border-radius: 50%; /* círculo perfecto */
+  background: #25D366; /* color oficial WhatsApp */
   color: #fff;
   text-decoration: none;
   box-shadow: 0 8px 20px rgba(2,6,23,0.12);
   border: 0;
   transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
   pointer-events: auto;
-  font-weight: 700;
-  font-size: 14px;
+  font-size: 22px; /* tamaño del ícono */
 }
 
 /* icon inside */
-.whatsapp-fab svg { display: block; color: white; }
-
-/* optional label for narrow screens */
-.whatsapp-fab .whatsapp-fab-label {
-  display: inline-block;
-  line-height: 1;
+.whatsapp-fab svg {
+  display: block;
+  color: white;
+  width: 28px;
+  height: 28px;
 }
 
-/* subtle hover */
+/* ocultar label */
+.whatsapp-fab .whatsapp-fab-label {
+  display: none;
+}
+
+/* hover */
 .whatsapp-fab:hover {
   transform: translateY(-4px);
-  box-shadow: 0 14px 30px rgba(2,6,23,0.14);
-  opacity: 0.98;
+  box-shadow: 0 14px 30px rgba(2,6,23,0.2);
+  opacity: 0.95;
 }
 
-/* smaller on very small screens to avoid covering content */
+/* versión más pequeña en móviles */
 @media (max-width: 480px) {
   .whatsapp-fab {
-    right: 12px;
-    bottom: 12px;
-    padding: 8px 10px;
-    font-size: 13px;
+    width: 48px;
+    height: 48px;
   }
-  .whatsapp-fab .whatsapp-fab-label {
-    display: none; /* sólo icono en pantallas muy pequeñas */
+  .whatsapp-fab svg {
+    width: 24px;
+    height: 24px;
   }
 }
